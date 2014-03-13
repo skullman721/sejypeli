@@ -16,12 +16,19 @@ public class Pong : PhysicsGame
 
     PhysicsObject maila1;
     PhysicsObject maila2;
+
+    IntMeter pelaajan1Pisteet;
+    IntMeter pelaajan2Pisteet;
+
+
     public override void Begin()
     {
         LuodaKentta();
         AsetaOhjaimet();
         AloitaPeli();
-        // TODO: Kirjoita ohjelmakoodisi tähän
+        LisaaLaskurit();
+        // TODO: Kirjoita ohje
+        
         PhoneBackButton.Listen(ConfirmExit, "Lopeta peli");
 
     }
@@ -39,7 +46,26 @@ public class Pong : PhysicsGame
 
 
     }
+    void LisaaLaskurit()
+    {
+        pelaajan1Pisteet = LuoPisteLaskuri (Screen.Left + 100.0, Screen.Top - 100.0);
+        pelaajan2Pisteet = LuoPisteLaskuri(Screen.Right - 100.0, Screen.Top - 100.0);
+    }
+    IntMeter LuoPisteLaskuri(double x, double y)
+    {
+        IntMeter laskuri = new IntMeter(0);
+        laskuri.MaxValue = 10;
+        return laskuri;
+        Label naytto = new Label();
+        naytto.BindTo(laskuri);
+        naytto.X = x;
+        naytto.Y = y;
+        naytto.TextColor = Color.White;
+        naytto.BorderColor = Level.Background.Color;
+        naytto.Color = Level.Background.Color;
+        Add(naytto);
 
+    }
     void AsetaOhjaimet()
     {
         Keyboard.Listen(Key.A, ButtonState.Down, AsetaNopeus, "Pelaaja 1: Liikuta mailaa ylös", maila1, nopeusYlos);
@@ -63,7 +89,19 @@ public class Pong : PhysicsGame
     }
     void AsetaNopeus(PhysicsObject maila, Vector nopeus)
     {
-        maila.Velocity = nopeus;
+        if ((nopeus.Y < 0) && (maila.Bottom < Level.Bottom))
+        {
+            maila.Velocity = Vector.Zero;
+            return;
+        }
+        if ((nopeus.Y > 0) && (maila.Top > Level.Top))
+        {
+
+            maila.Velocity = Vector.Zero;
+            return;
+            
+        }
+      maila.Velocity = nopeus;
     }
 
     void LuodaKentta()
