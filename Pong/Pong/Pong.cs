@@ -17,6 +17,9 @@ public class Pong : PhysicsGame
     PhysicsObject maila1;
     PhysicsObject maila2;
 
+    PhysicsObject vasenReuna;
+    PhysicsObject oikeaReuna;
+
     IntMeter pelaajan1Pisteet;
     IntMeter pelaajan2Pisteet;
 
@@ -55,16 +58,17 @@ public class Pong : PhysicsGame
     {
         IntMeter laskuri = new IntMeter(0);
         laskuri.MaxValue = 10;
-        return laskuri;
+        
         Label naytto = new Label();
         naytto.BindTo(laskuri);
         naytto.X = x;
         naytto.Y = y;
         naytto.TextColor = Color.White;
-        naytto.BorderColor = Level.Background.Color;
-        naytto.Color = Level.Background.Color;
+        naytto.BorderColor = Color.Black;
+        naytto.Color = Color.Black;
         Add(naytto);
 
+        return laskuri;
     }
     void AsetaOhjaimet()
     {
@@ -103,7 +107,19 @@ public class Pong : PhysicsGame
         }
       maila.Velocity = nopeus;
     }
+    void KasittelePallonTormaus(PhysicsObject pallo, PhysicsObject kohde)
+    {
+        if (kohde == oikeaReuna)
+        {
 
+            pelaajan1Pisteet.Value += 1;
+        }
+        else if (kohde == vasenReuna)
+        {
+            pelaajan2Pisteet.Value += 1;
+        }
+
+    }
     void LuodaKentta()
     {
         pallo = new PhysicsObject(40.0, 40.0);
@@ -119,9 +135,24 @@ public class Pong : PhysicsGame
         maila1 = LuoMaila(Level.Left + 20.0, 0.0);
         maila2 = LuoMaila(Level.Right - 20.0, 0.0);
 
+        AddCollisionHandler(pallo, KasittelePallonTormaus);
 
+         vasenReuna = Level.CreateLeftBorder();
+        vasenReuna.Restitution = 1.0;
+        vasenReuna.IsVisible = false;
 
-        Level.CreateBorders(1.0, false);
+        PhysicsObject oikeaReuna = Level.CreateRightBorder();
+        oikeaReuna.Restitution = 1.0;
+        oikeaReuna.IsVisible = false;
+
+        PhysicsObject ylaReuna = Level.CreateTopBorder();
+        ylaReuna.Restitution = 1.0;
+        ylaReuna.IsVisible = false;
+
+        PhysicsObject alaReuna = Level.CreateBottomBorder();
+        alaReuna.Restitution = 1.0;
+        alaReuna.IsVisible = false;
+
         Level.Background.Color = Color.DarkRed;
         Camera.ZoomToLevel();
 
